@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>week weather</title>
+    <link rel="stylesheet" href="style/weather2.css" />
+  </head>
+  <body>
+    <div id="center">
+      <h1 id="para1">5-day Weather Forecast</h1>
+      <p id="inputcontainer">
+        City:
+
+        <input type="text" id="city" />
+      </p>
+      <button onclick="getInfo()">Search</button>
+      <h2 id="cityname">--city--</h2>
+    </div>
+    <div id="weathercontainer">
+      <div id="iconcontainer">
+        <div class="icons">
+          <p class="weather" id="day1"></p>
+          <div class="image"><img src="#" class="imgclass" id="img1" /></div>
+          <p class="minvalue" id="day1min">...</p>
+          <p class="maxvalue" id="day1max">...</p>
+        </div>
+        <div class="icons">
+          <p class="weather" id="day2"></p>
+          <div class="image"><img src="#" class="imgclass" id="img2" /></div>
+          <p class="minvalue" id="day2min">...</p>
+          <p class="maxvalue" id="day2max">...</p>
+        </div>
+        <div class="icons">
+          <p class="weather" id="day3"></p>
+          <div class="image"><img src="#" class="imgclass" id="img3" /></div>
+          <p class="minvalue" id="day3min">...</p>
+          <p class="maxvalue" id="day3max">...</p>
+        </div>
+        <div class="icons">
+          <p class="weather" id="day4"></p>
+          <div class="image"><img src="#" class="imgclass" id="img4" /></div>
+          <p class="minvalue" id="day4min">...</p>
+          <p class="maxvalue" id="day4max">...</p>
+        </div>
+        <div class="icons">
+          <p class="weather" id="day5"></p>
+          <div class="image"><img src="#" class="imgclass" id="img5" /></div>
+          <p class="minvalue" id="day5min">...</p>
+          <p class="maxvalue" id="day5max">...</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+<script>
+  getInfo();
+
+  let d = new Data();
+  let weekday = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friay",
+    "Saturday",
+  ];
+
+  function checkday() {
+    if (day + d.getDay() > 6) {
+      return day + d.getDay() - 7;
+    } else {
+      return day + d.getDay();
+    }
+  }
+  for (var i = 0; i < 7; i++) {
+    document.getElementById("day" + (i + 1)).innerHTML = weekday[checkday(i)];
+  }
+  function getInfo() {
+    const newname = document.getElementById("city").value;
+    const cityname = document.getElementById("cityname");
+    cityname.innerHTML = `${newname}`;
+
+    fetch(
+      `https://api.openweathermap.org/data/2.5/forecast?q=${newname}&appid=7b8022136263af6de19966153e8bbcb5`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        for (i = 0; i < 5; i++) {
+          document.getElementById("day" + (i + 1) + "min").innerHTML =
+            "➡min:" +
+            Number(data.list[i].main.temp_min - 288.53).toFixed(1) +
+            "℃";
+        }
+        for (i = 0; i < 5; i++) {
+          document.getElementById("day" + (i + 1) + "max").innerHTML =
+            "➡max:" +
+            Number(data.list[i].main.temp_max - 288.53).toFixed(1) +
+            "℃";
+        }
+        for (i = 0; i < 5; i++) {
+          document.getElementById("img" + (i + 1)).src =
+            "https://openweathermap.org/img/wn/" +
+            data.list[i].weather[0].icon +
+            ".png";
+        }
+        console.log(data);
+      });
+
+    // .catch((err) => alert("something went wrong"));
+  }
+
+  function DefaultScreen() {
+    document.getElementById("city").defalultValue = "Pune";
+    getInfo();
+  }
+</script>

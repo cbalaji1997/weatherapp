@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./style/index.css" />
+  </head>
+
+  <body>
+    <div id="search">
+      <input type="text" id="city" />
+      <button onClick="getweather()">Get Weather</button>
+    </div>
+    <a href="./weather2.html">5days</a>
+    <div id="top">
+      <div id="container"></div>
+
+      <div id="image"></div>
+    </div>
+  </body>
+</html>
+<script>
+  let image = document.getElementById("image");
+
+  let container = document.getElementById("container");
+
+  async function getweather() {
+    try {
+      let city = document.getElementById("city").value;
+      let res = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=7b8022136263af6de19966153e8bbcb5&&units=metric`
+      );
+      let data = await res.json();
+
+      appendData(data);
+      console.log("data:", data);
+    } catch (err) {
+      console.log("err:", err);
+    }
+  }
+
+  function appendData(data) {
+    container.innerHTML = null;
+    image.innerHTML = null;
+
+    let name = document.createElement("h3");
+    name.innerText = " 🌆City:" + " " + data.name;
+
+    let minTemprature = document.createElement("h3");
+    minTemprature.innerText =
+      "Min.Temprature:" + "  " + data.main.temp_min + "*C";
+
+    let maxTemprature = document.createElement("h3");
+    maxTemprature.innerText =
+      "Max.Temprature:" + "  " + data.main.temp_max + "*C";
+
+    let wind = document.createElement("h3");
+    wind.innerText = "wind:" + " " + data.wind.speed;
+
+    let clouds = document.createElement("h3");
+    clouds.innerText = "⛈️clouds:" + " " + data.clouds.all;
+
+    let sunrise = document.createElement("h3");
+    sunrise.innerText = " 🌅Sunrise:-" + " " + data.sys.sunrise;
+
+    let sunset = document.createElement("h3");
+    sunset.innerText = "Sunset:-" + " " + data.sys.sunset;
+
+    let iframe = document.createElement("iframe");
+
+    iframe.src = `https://maps.google.com/maps?q=${data.name}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+    iframe.height = "400px";
+    iframe.width = "500px";
+
+    container.append(
+      name,
+      minTemprature,
+      maxTemprature,
+      wind,
+      clouds,
+      sunrise,
+      sunset
+    );
+    image.append(iframe);
+  }
+</script>
